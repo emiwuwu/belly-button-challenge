@@ -25,20 +25,17 @@ function init() {
       const firstSample = names[0];
       createCharts(firstSample);
       displayMetadata(firstSample);
-
-      // const firstWashingFrequency= metadata.
-
-      // createGauge(washingFrequency)
     });
 
 }
 
-// Function to update the chart based on the selected individual
+// Function to update the charts based on the selected individual
 function updateData(sample) {
   createCharts(sample);
   displayMetadata(sample);
 }
 
+// Call the init function
 init();
 
 // Function to create the charts
@@ -46,7 +43,7 @@ function createCharts(sample) {
   // Filter the data for the selected individual
   const selectedData = samplesData.find(data => data.id == sample);
 
-  // Extract the necessary data for the top 10 OTUs
+  // Extract the necessary data and layout for the bar chart
   const top10SampleValues = selectedData.sample_values.slice(0, 10).reverse();
   const top10OTUIds = selectedData.otu_ids.slice(0, 10).reverse();
   const top10OTULabels = selectedData.otu_labels.slice(0, 10).reverse();
@@ -59,7 +56,11 @@ function createCharts(sample) {
     text: top10OTULabels
   }];
 
-  // Extract the necessary data for bubble chart
+  const layout_bar = {
+    title: `Top 10 OTUs for Individual ${sample}`,
+  };
+
+  // Extract the necessary data and layout for the bubble chart
   const otuIds = selectedData.otu_ids;
   const sampleValues = selectedData.sample_values;
   const otuLabels = selectedData.otu_labels;
@@ -76,17 +77,12 @@ function createCharts(sample) {
     }
   }];
 
-  // Define the layout for the chart
-  const layout_bar = {
-    title: `Top 10 OTUs for Individual ${sample}`,
-  };
-
   const layout_bubble = {
     title: `Bubble Chart for Individual ${sample}`,
     xaxis: { title: 'OTU ID' },
   };
 
-  // Plot the chart using Plotly
+  // Plot the charts using Plotly
   Plotly.newPlot("bar", trace_bar, layout_bar);
   Plotly.newPlot('bubble', trace_bubble, layout_bubble);
 }
@@ -106,32 +102,31 @@ function displayMetadata(sample) {
     metadataDiv.append("h6").text(`${key}: ${selectedMetadata[key]}`);
   };
 
-  createGauge(selectedMetadata.wfrq);
+  createGauge(selectedMetadata.wfreq);
 }
 
+// This function creates a gauge chart to display belly button washing frequency
 function createGauge(washingFrequency) {
-  // const washingFrequency = metadata.wfreq;
-
   // Define the Gauge Chart data and layout
   const data = [
     {
       type: "indicator",
       mode: "gauge+number",
       value: washingFrequency,
-      title: { text: "Scrubs per Week", font: {size:16}},
+      title: { text: "<b>Belly Button Washing Frequency</b> <br> Scrbs per Week", font: {size:16, color:"grey"}},
       gauge: {
         axis: { range: [0, 9], tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        bar: {color: 'darkblue'},
+        bar: {color: "#E2725B"},
         steps: [
-          { range: [0, 1], color: "rgba(0, 0, 255, 0.1)" },
-          { range: [1, 2], color: "rgba(0, 0, 255, 0.2)" },
-          { range: [2, 3], color: "rgba(0, 0, 255, 0.3)" },
-          { range: [3, 4], color: "rgba(0, 0, 255, 0.4)" },
-          { range: [4, 5], color: "rgba(0, 0, 255, 0.5)" },
-          { range: [5, 6], color: "rgba(0, 0, 255, 0.6)" },
-          { range: [6, 7], color: "rgba(0, 0, 255, 0.7)" },
-          { range: [7, 8], color: "rgba(0, 0, 255, 0.8)" },
-          { range: [8, 9], color: "rgba(0, 0, 255, 0.9)" },
+          { range: [0, 1], color: "rgba(60, 179, 113, 0.1)" },
+          { range: [1, 2], color: "rgba(60, 179, 113, 0.2)" },
+          { range: [2, 3], color: "rgba(60, 179, 113, 0.3)" },
+          { range: [3, 4], color: "rgba(60, 179, 113, 0.4)" },
+          { range: [4, 5], color: "rgba(60, 179, 113, 0.5)" },
+          { range: [5, 6], color: "rgba(60, 179, 113, 0.6)" },
+          { range: [6, 7], color: "rgba(60, 179, 113, 0.7)" },
+          { range: [7, 8], color: "rgba(60, 179, 113, 0.8)" },
+          { range: [8, 9], color: "rgba(60, 179, 113, 0.9)" },
         ],
       },
     },
@@ -139,7 +134,7 @@ function createGauge(washingFrequency) {
 
   const layout = {
     width: 400,
-    height: 300,
+    height: 400,
     margin: { t: 25, r: 25, l: 25, b: 25 },
     paper_bgcolor: "white",
     font: { color: "grey", family: "Arial" },
@@ -148,7 +143,6 @@ function createGauge(washingFrequency) {
   // Plot the Gauge Chart in the specified container
   Plotly.newPlot("gauge", data, layout);
 }
-
 
 // Add an event listener to the dropdown
 const dropdown = document.getElementById('selDataset');
